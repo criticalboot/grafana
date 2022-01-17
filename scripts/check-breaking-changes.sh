@@ -40,7 +40,7 @@ for package in "${PACKAGES[@]}"; do
         GITHUB_MESSAGE="${GITHUB_MESSAGE}**\\\`${PACKAGE_PATH}\\\`** has possible breaking changes ([more info](${GITHUB_JOB_LINK}#step:${GITHUB_STEP_NUMBER}:1))<br />"    
     fi    
 
-done <<< "$PACKAGES"
+done
 
 # "Export" the message to an environment variable that can be used across Github Actions steps
 echo "::set-output name=is_breaking::$EXIT_CODE"
