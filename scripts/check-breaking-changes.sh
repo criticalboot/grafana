@@ -8,7 +8,7 @@ GITHUB_MESSAGE=""
 # Loop through the packages
 while IFS=" " read -r -a package; do
 
-    # Read package info
+    # shellcheck disable=SC2128
     PACKAGE_PATH=$(basename "$package")
 
     # Calculate current and previous package paths / names
