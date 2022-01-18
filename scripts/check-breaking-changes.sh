@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # Find package directories
-PACKAGES=($(ls -d ./packages/*/))
+PACKAGES=$(ls -d ./packages/*/)
 EXIT_CODE=0
 GITHUB_MESSAGE=""
 
 # Loop through the packages
-for package in "${PACKAGES[@]}"; do
+while IFS=" " read -r -a package; do
 
     # Read package info
     PACKAGE_PATH=$(basename "$package")
@@ -15,11 +15,10 @@ for package in "${PACKAGES[@]}"; do
     PREV="./main/$PACKAGE_PATH/dist/"
     CURRENT="./pr/$PACKAGE_PATH/dist/"
 
-    # Temporarily skipping @grafana/toolkit, as it doesn't have any exposed static typing
+    # Temporarily skipping these packages as they don't have any exposed static typing
     if [[ "$PACKAGE_PATH" == 'grafana-toolkit' || "$PACKAGE_PATH" == 'jaeger-ui-components' ]]; then
         continue
     fi
-
 
     # Run the comparison and record the exit code
     echo ""
@@ -38,9 +37,9 @@ for package in "${PACKAGES[@]}"; do
     then
         EXIT_CODE=1
         GITHUB_MESSAGE="${GITHUB_MESSAGE}**\\\`${PACKAGE_PATH}\\\`** has possible breaking changes ([more info](${GITHUB_JOB_LINK}#step:${GITHUB_STEP_NUMBER}:1))<br />"    
-    fi    
+    fi
 
-done
+done <<< "$PACKAGES"
 
 # "Export" the message to an environment variable that can be used across Github Actions steps
 echo "::set-output name=is_breaking::$EXIT_CODE"
